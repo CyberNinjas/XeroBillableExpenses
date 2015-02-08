@@ -89,11 +89,11 @@ public class Settings {
             
             cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(RSAx509Cert.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(RSAx509Cert.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(RSAx509Cert.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -125,7 +125,7 @@ public class Settings {
             String ret = new String(Base64.encodeBase64(ciphertext));
             return ret;
         } catch (InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidKeyException ex) {
-            Logger.getLogger(RSAx509Cert.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
    }
@@ -139,7 +139,7 @@ public class Settings {
             String ret = new String(cipher.doFinal(cText), "UTF-8");
             return ret;
         } catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
-            Logger.getLogger(RSAx509Cert.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
    }

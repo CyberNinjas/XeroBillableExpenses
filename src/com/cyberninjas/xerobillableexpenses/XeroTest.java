@@ -1,25 +1,36 @@
-package com.cyberninjas.XeroBillableExpenses;
+/*
+ * Copyright (C) 2015 Cyber Ninjas Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.cyberninjas.xerobillableexpenses;
 
 import com.connectifier.xeroclient.XeroApiException;
 import com.connectifier.xeroclient.XeroClient;
 import com.connectifier.xeroclient.models.*;
-import com.cyberninjas.util.RSAx509Cert;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import com.cyberninjas.xerobillableexpenses.util.RSAx509CertGen;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class Xero2 {
+public class XeroTest {
 
     public static void main(String[] args) throws Exception {
         Reader pemReader = null;
-        String consumerKey = "ILTWAUMMOYNJX3CEFJEHLJ6GORU1CN";
-        String consumerSecret = "HA3BSU7WHRWARQ8MZWRAMYQ3D8ZCE4";
-        RSAx509Cert x509 = new RSAx509Cert();
+        String consumerKey = "";
+        String consumerSecret = "";
+        RSAx509CertGen x509 = new RSAx509CertGen();
         
         pemReader = new StringReader(x509.getPrivateKey());
         XeroClient client = new XeroClient(pemReader, consumerKey, consumerSecret);

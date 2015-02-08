@@ -16,7 +16,7 @@
  */
 package com.cyberninjas.xerobillableexpenses;
 
-import com.cyberninjas.xerobillableexpenses.util.RSAx509Cert;
+import com.cyberninjas.xerobillableexpenses.util.RSAx509CertGen;
 import com.cyberninjas.xerobillableexpenses.util.Settings;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import javax.swing.JOptionPane;
  * @author Doug Logan
  */
 public class Main extends javax.swing.JFrame {
-    private RSAx509Cert certGen = new RSAx509Cert();
+    private RSAx509CertGen certGen = new RSAx509CertGen();
     private Settings settings = new Settings();
     /**
      * Creates new form Main
