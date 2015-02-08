@@ -34,7 +34,6 @@ import java.util.prefs.Preferences;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -115,17 +114,23 @@ public class Settings {
     
     private String encryptText(String plainText){
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, this.secret);
-            AlgorithmParameters params = cipher.getParameters();
-            if(this.iv == null){
+            this.iv = prefs.getByteArray("DRUGS", null);
+            if(this.iv == null) { //If not set, set the IV
+                cipher.init(Cipher.ENCRYPT_MODE, this.secret);
+                AlgorithmParameters params = cipher.getParameters();
                 this.iv = params.getParameterSpec(IvParameterSpec.class).getIV();
                 prefs.putByteArray("DRUGS", this.iv);
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, this.secret, new IvParameterSpec(this.iv));
             }
+            
             byte[] ciphertext = cipher.doFinal(plainText.getBytes("UTF-8"));
             String ret = new String(Base64.encodeBase64(ciphertext));
             return ret;
         } catch (InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidKeyException ex) {
-            Logger.getLogger(RSAx509CertGen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidAlgorithmParameterException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
    }
@@ -133,6 +138,7 @@ public class Settings {
    private String decryptText(String cipherText){
         try {
             this.iv = prefs.getByteArray("DRUGS", null);
+            if(this.iv == null) return "";
             byte[] cText = Base64.decodeBase64(cipherText); 
             /* Decrypt the message, given derived key and initialization vector. */
             cipher.init(Cipher.DECRYPT_MODE, this.secret, new IvParameterSpec(this.iv));
