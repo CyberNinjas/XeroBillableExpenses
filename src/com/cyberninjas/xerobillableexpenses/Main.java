@@ -16,10 +16,12 @@
  */
 package com.cyberninjas.xerobillableexpenses;
 
+import com.connectifier.xeroclient.XeroClient;
 import com.cyberninjas.xerobillableexpenses.util.RSAx509CertGen;
 import com.cyberninjas.xerobillableexpenses.util.Settings;
 import java.awt.Desktop;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
@@ -33,14 +35,29 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame {
     private RSAx509CertGen certGen = new RSAx509CertGen();
     private Settings settings = new Settings();
-    /**
-     * Creates new form Main
-     */
+    private XeroClient client = null;
+
     public Main() {
         initComponents();
         this.jTextConsumerKey.setText(settings.getSecretPref("CONSUMER_KEY"));
         this.jTextConsumerSecret.setText(settings.getSecretPref("CONSUMER_SECRET"));
         this.jTextAreaPublicKey.setText(settings.getPref("PUBLIC_KEY"));
+        this.setXeroClient();
+        
+        //If any are blank, then focus the settings tab.
+        if(jTextAreaPublicKey.getText().isEmpty() || jTextConsumerKey.getText().isEmpty() ||
+            jTextConsumerSecret.getText().isEmpty()){
+            this.jTabbedPane1.setSelectedIndex(1);
+        } 
+    }
+    
+    private void setXeroClient(){
+       String sPKey = certGen.getPrivateKey();
+       String consumerKey = this.jTextConsumerKey.getText();
+       String consumerSecret = this.jTextConsumerSecret.getText();
+       
+       if(!sPKey.isEmpty() && !consumerKey.isEmpty() && !consumerSecret.isEmpty())
+            client = new XeroClient(new StringReader(sPKey), consumerKey, consumerSecret); 
     }
 
     /**
@@ -55,17 +72,33 @@ public class Main extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelInvoicing = new javax.swing.JPanel();
         jPanelSettings = new javax.swing.JPanel();
-        jLabelConsumerKey = new javax.swing.JLabel();
-        jLabelConsumerSecret = new javax.swing.JLabel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanelSettingsConnection = new javax.swing.JPanel();
+        jLabelAuthor2 = new javax.swing.JLabel();
+        jButtonXeroAppURL1 = new javax.swing.JButton();
+        jLabelAuthor3 = new javax.swing.JLabel();
+        jButtonChangeKey = new javax.swing.JButton();
         jLabelPublicKey = new javax.swing.JLabel();
         jScrollPanePublicKey = new javax.swing.JScrollPane();
         jTextAreaPublicKey = new javax.swing.JTextArea();
-        jTextConsumerSecret = new javax.swing.JTextField();
-        jTextConsumerKey = new javax.swing.JTextField();
-        jButtonApply = new javax.swing.JButton();
-        jButtonChangeKey = new javax.swing.JButton();
         jLabelAuthor1 = new javax.swing.JLabel();
-        jButtonXeroAppURL = new javax.swing.JButton();
+        jTextConsumerKey = new javax.swing.JTextField();
+        jTextConsumerSecret = new javax.swing.JTextField();
+        jLabelConsumerSecret = new javax.swing.JLabel();
+        jLabelConsumerKey = new javax.swing.JLabel();
+        jButtonApply = new javax.swing.JButton();
+        jPanelSettingsXero = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButtonXeroAppURL2 = new javax.swing.JButton();
+        jLabelPublicKey1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabelPublicKey2 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabelPublicKey3 = new javax.swing.JLabel();
+        jLabelPublicKey4 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
+        jComboBox4 = new javax.swing.JComboBox();
+        jButtonApply1 = new javax.swing.JButton();
         jPanelAbout = new javax.swing.JPanel();
         jLabelAuthorTitle = new javax.swing.JLabel();
         jLabelCompanyTitle = new javax.swing.JLabel();
@@ -82,20 +115,46 @@ public class Main extends javax.swing.JFrame {
         jPanelInvoicing.setLayout(jPanelInvoicingLayout);
         jPanelInvoicingLayout.setHorizontalGroup(
             jPanelInvoicingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 591, Short.MAX_VALUE)
+            .addGap(0, 802, Short.MAX_VALUE)
         );
         jPanelInvoicingLayout.setVerticalGroup(
             jPanelInvoicingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 410, Short.MAX_VALUE)
+            .addGap(0, 559, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Invoicing", jPanelInvoicing);
 
-        jLabelConsumerKey.setFont(jLabelConsumerKey.getFont().deriveFont(jLabelConsumerKey.getFont().getStyle() | java.awt.Font.BOLD, jLabelConsumerKey.getFont().getSize()+1));
-        jLabelConsumerKey.setText("Consumer Key:");
+        jLabelAuthor2.setFont(jLabelAuthor2.getFont().deriveFont(jLabelAuthor2.getFont().getStyle() & ~java.awt.Font.BOLD, jLabelAuthor2.getFont().getSize()+1));
+        jLabelAuthor2.setText("To get started you must create a private application under your Xero account at:");
 
-        jLabelConsumerSecret.setFont(jLabelConsumerSecret.getFont().deriveFont(jLabelConsumerSecret.getFont().getStyle() | java.awt.Font.BOLD, jLabelConsumerSecret.getFont().getSize()+1));
-        jLabelConsumerSecret.setText("Consumer Secret:");
+        jButtonXeroAppURL1.setBackground(jPanelAbout.getBackground());
+        jButtonXeroAppURL1.setForeground(new java.awt.Color(51, 0, 255));
+        jButtonXeroAppURL1.setText("<html><u>https://api.xero.com/Application</u></html>");
+        jButtonXeroAppURL1.setToolTipText("Goto https://www.CyberNinjas.com");
+        jButtonXeroAppURL1.setAlignmentY(0.0F);
+        jButtonXeroAppURL1.setBorder(null);
+        jButtonXeroAppURL1.setBorderPainted(false);
+        jButtonXeroAppURL1.setContentAreaFilled(false);
+        jButtonXeroAppURL1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonXeroAppURL1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButtonXeroAppURL1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jButtonXeroAppURL1.setIconTextGap(0);
+        jButtonXeroAppURL1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jButtonXeroAppURL1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonXeroAppURL1ActionPerformed(evt);
+            }
+        });
+
+        jLabelAuthor3.setFont(jLabelAuthor3.getFont().deriveFont(jLabelAuthor3.getFont().getStyle() & ~java.awt.Font.BOLD, jLabelAuthor3.getFont().getSize()+1));
+        jLabelAuthor3.setText("You will be asked to provide a public key, which you can generate below.");
+
+        jButtonChangeKey.setText("Generate Key");
+        jButtonChangeKey.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonChangeKeyActionPerformed(evt);
+            }
+        });
 
         jLabelPublicKey.setFont(jLabelPublicKey.getFont().deriveFont(jLabelPublicKey.getFont().getStyle() | java.awt.Font.BOLD, jLabelPublicKey.getFont().getSize()+1));
         jLabelPublicKey.setText("Public Key:");
@@ -104,11 +163,20 @@ public class Main extends javax.swing.JFrame {
         jTextAreaPublicKey.setRows(5);
         jScrollPanePublicKey.setViewportView(jTextAreaPublicKey);
 
+        jLabelAuthor1.setFont(jLabelAuthor1.getFont().deriveFont(jLabelAuthor1.getFont().getStyle() & ~java.awt.Font.BOLD, jLabelAuthor1.getFont().getSize()+1));
+        jLabelAuthor1.setText("Record the Consumer Key and Consumer Secret values in the spaces below and click \"Apply\" to save.");
+
         jTextConsumerSecret.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextConsumerSecretActionPerformed(evt);
             }
         });
+
+        jLabelConsumerSecret.setFont(jLabelConsumerSecret.getFont().deriveFont(jLabelConsumerSecret.getFont().getStyle() | java.awt.Font.BOLD, jLabelConsumerSecret.getFont().getSize()+1));
+        jLabelConsumerSecret.setText("Consumer Secret:");
+
+        jLabelConsumerKey.setFont(jLabelConsumerKey.getFont().deriveFont(jLabelConsumerKey.getFont().getStyle() | java.awt.Font.BOLD, jLabelConsumerKey.getFont().getSize()+1));
+        jLabelConsumerKey.setText("Consumer Key:");
 
         jButtonApply.setText("Apply");
         jButtonApply.addActionListener(new java.awt.event.ActionListener() {
@@ -117,88 +185,214 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButtonChangeKey.setText("Change Key");
-        jButtonChangeKey.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonChangeKeyActionPerformed(evt);
+        javax.swing.GroupLayout jPanelSettingsConnectionLayout = new javax.swing.GroupLayout(jPanelSettingsConnection);
+        jPanelSettingsConnection.setLayout(jPanelSettingsConnectionLayout);
+        jPanelSettingsConnectionLayout.setHorizontalGroup(
+            jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSettingsConnectionLayout.createSequentialGroup()
+                        .addComponent(jLabelAuthor3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonApply, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPanePublicKey)
+                    .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                        .addComponent(jLabelPublicKey)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonChangeKey))
+                    .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                        .addComponent(jLabelConsumerKey)
+                        .addGap(21, 21, 21)
+                        .addComponent(jTextConsumerKey))
+                    .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                        .addComponent(jLabelConsumerSecret)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextConsumerSecret))
+                    .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                        .addGroup(jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelAuthor2)
+                            .addComponent(jButtonXeroAppURL1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelAuthor1))
+                        .addGap(0, 15, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanelSettingsConnectionLayout.setVerticalGroup(
+            jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSettingsConnectionLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabelAuthor2)
+                .addGap(8, 8, 8)
+                .addComponent(jButtonXeroAppURL1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelAuthor3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelPublicKey)
+                    .addComponent(jButtonChangeKey))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPanePublicKey, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addComponent(jLabelAuthor1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelConsumerKey)
+                    .addComponent(jTextConsumerKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSettingsConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelConsumerSecret)
+                    .addComponent(jTextConsumerSecret, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonApply)
+                .addGap(23, 23, 23))
+        );
+
+        jTabbedPane2.addTab("Connection", jPanelSettingsConnection);
+
+        jPanelSettingsXero.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jPanelSettingsXeroFocusGained(evt);
             }
         });
 
-        jLabelAuthor1.setFont(jLabelAuthor1.getFont().deriveFont(jLabelAuthor1.getFont().getStyle() & ~java.awt.Font.BOLD, jLabelAuthor1.getFont().getSize()+1));
-        jLabelAuthor1.setText("Consumer Keys and Consumer Secrets can be obtain from Xero after you create a private application at:");
+        jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getSize()+1f));
+        jLabel1.setText("<HTML>In order to use this program you must have tracking enabled on your Xero account and have two categories created. One category should be for a list of the names of clients you will be invoicing expenses, and the other category should be used to flag entries which need to be billed. Specifically within that 2nd category you will need to create an option which you will choose during reconciliation to indicate that the item needs to be billed, and an option which you want this program to change the entry to after it has successfully been added to an invoice.</br>To setup tracking you must first go to the following URL:</html>");
+        jLabel1.setToolTipText("");
 
-        jButtonXeroAppURL.setBackground(jPanelAbout.getBackground());
-        jButtonXeroAppURL.setForeground(new java.awt.Color(51, 0, 255));
-        jButtonXeroAppURL.setText("<html><u>https://api.xero.com/Application</u></html>");
-        jButtonXeroAppURL.setToolTipText("Goto https://www.CyberNinjas.com");
-        jButtonXeroAppURL.setAlignmentY(0.0F);
-        jButtonXeroAppURL.setBorder(null);
-        jButtonXeroAppURL.setBorderPainted(false);
-        jButtonXeroAppURL.setContentAreaFilled(false);
-        jButtonXeroAppURL.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButtonXeroAppURL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButtonXeroAppURL.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        jButtonXeroAppURL.setIconTextGap(0);
-        jButtonXeroAppURL.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jButtonXeroAppURL.addActionListener(new java.awt.event.ActionListener() {
+        jButtonXeroAppURL2.setBackground(jPanelAbout.getBackground());
+        jButtonXeroAppURL2.setForeground(new java.awt.Color(51, 0, 255));
+        jButtonXeroAppURL2.setText("<html><u>https://go.xero.com/Setup/Tracking.aspx</u></html>");
+        jButtonXeroAppURL2.setToolTipText("Goto https://www.CyberNinjas.com");
+        jButtonXeroAppURL2.setAlignmentY(0.0F);
+        jButtonXeroAppURL2.setBorder(null);
+        jButtonXeroAppURL2.setBorderPainted(false);
+        jButtonXeroAppURL2.setContentAreaFilled(false);
+        jButtonXeroAppURL2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonXeroAppURL2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButtonXeroAppURL2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        jButtonXeroAppURL2.setIconTextGap(0);
+        jButtonXeroAppURL2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jButtonXeroAppURL2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonXeroAppURLActionPerformed(evt);
+                jButtonXeroAppURL2ActionPerformed(evt);
             }
         });
+
+        jLabelPublicKey1.setFont(jLabelPublicKey1.getFont().deriveFont(jLabelPublicKey1.getFont().getStyle() | java.awt.Font.BOLD, jLabelPublicKey1.getFont().getSize()+1));
+        jLabelPublicKey1.setText("Default Client Tracking Category:");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<Not Set>" }));
+        jComboBox1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jComboBox1FocusGained(evt);
+            }
+        });
+
+        jLabelPublicKey2.setFont(jLabelPublicKey2.getFont().deriveFont(jLabelPublicKey2.getFont().getStyle() | java.awt.Font.BOLD, jLabelPublicKey2.getFont().getSize()+1));
+        jLabelPublicKey2.setText("Default Billable Tracking Category:");
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<Not Set>" }));
+
+        jLabelPublicKey3.setFont(jLabelPublicKey3.getFont().deriveFont(jLabelPublicKey3.getFont().getStyle() | java.awt.Font.BOLD, jLabelPublicKey3.getFont().getSize()+1));
+        jLabelPublicKey3.setText("Billable Tracking Option:");
+
+        jLabelPublicKey4.setFont(jLabelPublicKey4.getFont().deriveFont(jLabelPublicKey4.getFont().getStyle() | java.awt.Font.BOLD, jLabelPublicKey4.getFont().getSize()+1));
+        jLabelPublicKey4.setText("Billed Tracking Option:");
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<Not Set>" }));
+
+        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<Not Set>" }));
+
+        jButtonApply1.setText("Apply");
+        jButtonApply1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonApply1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelSettingsXeroLayout = new javax.swing.GroupLayout(jPanelSettingsXero);
+        jPanelSettingsXero.setLayout(jPanelSettingsXeroLayout);
+        jPanelSettingsXeroLayout.setHorizontalGroup(
+            jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSettingsXeroLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                                .addComponent(jButtonXeroAppURL2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabelPublicKey1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                                .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                                        .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabelPublicKey2)
+                                            .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabelPublicKey4)
+                                                .addComponent(jLabelPublicKey3)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                                                .addGap(2, 2, 2)
+                                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(0, 136, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSettingsXeroLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButtonApply1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
+        );
+        jPanelSettingsXeroLayout.setVerticalGroup(
+            jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                        .addComponent(jButtonXeroAppURL2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelPublicKey1))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelSettingsXeroLayout.createSequentialGroup()
+                        .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabelPublicKey2)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelPublicKey3))
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelSettingsXeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelPublicKey4)
+                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+                .addComponent(jButtonApply1)
+                .addGap(25, 25, 25))
+        );
+
+        jTabbedPane2.addTab("Xero", jPanelSettingsXero);
 
         javax.swing.GroupLayout jPanelSettingsLayout = new javax.swing.GroupLayout(jPanelSettings);
         jPanelSettings.setLayout(jPanelSettingsLayout);
         jPanelSettingsLayout.setHorizontalGroup(
             jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSettingsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPanePublicKey)
-                    .addGroup(jPanelSettingsLayout.createSequentialGroup()
-                        .addComponent(jLabelConsumerKey)
-                        .addGap(21, 21, 21)
-                        .addComponent(jTextConsumerKey))
-                    .addGroup(jPanelSettingsLayout.createSequentialGroup()
-                        .addComponent(jLabelConsumerSecret)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextConsumerSecret))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSettingsLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonChangeKey)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonApply))
-                    .addGroup(jPanelSettingsLayout.createSequentialGroup()
-                        .addGroup(jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelPublicKey)
-                            .addComponent(jLabelAuthor1)
-                            .addComponent(jButtonXeroAppURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(jTabbedPane2)
         );
         jPanelSettingsLayout.setVerticalGroup(
             jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSettingsLayout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(jLabelAuthor1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonXeroAppURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelConsumerKey)
-                    .addComponent(jTextConsumerKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelConsumerSecret)
-                    .addComponent(jTextConsumerSecret, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelPublicKey)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPanePublicKey, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonApply)
-                    .addComponent(jButtonChangeKey))
-                .addGap(4, 4, 4))
+            .addComponent(jTabbedPane2)
         );
 
         jTabbedPane1.addTab("Settings", jPanelSettings);
@@ -262,7 +456,7 @@ public class Main extends javax.swing.JFrame {
                         .addGap(2, 2, 2)
                         .addComponent(jLabelVersion))
                     .addComponent(jButtonCyberNinjasURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addContainerGap(468, Short.MAX_VALUE))
         );
         jPanelAboutLayout.setVerticalGroup(
             jPanelAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -283,7 +477,7 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanelAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelVersionTitle)
                     .addComponent(jLabelVersion))
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addContainerGap(416, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("About", jPanelAbout);
@@ -296,26 +490,38 @@ public class Main extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonCyberNinjasURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCyberNinjasURLActionPerformed
-        try {
-            String url = jButtonCyberNinjasURL.getText().replaceAll("\\<[^>]*>","");
-            final URI uri = new URI(url);
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(uri);
-            }
-      } catch (IOException e) { 
-          
-      } catch (URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+    private void jButtonApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonApplyActionPerformed
+        String consumerKey = this.jTextConsumerKey.getText().trim();
+        String consumerSecret = this.jTextConsumerSecret.getText().trim();
+        String publicKey = this.jTextAreaPublicKey.getText().trim();
+        if(consumerKey.length() != 30){
+            this.showDialog("Consumer Key is not 30 characters.", "Invalid Consumer Key");
+            return;
         }
- 
-    }//GEN-LAST:event_jButtonCyberNinjasURLActionPerformed
+        if(consumerSecret.length() != 30){
+            this.showDialog("Consumer Secret is not 30 characters.", "Invalid Consumer Secret");
+            return;
+        }
+        if(publicKey.isEmpty()){
+            this.showDialog("Public Key must be specified. Click \"Change Key\" to generate", "Invalid Public Key");
+            return;
+        }
+
+        if(!certGen.getPrivateKey().isEmpty())
+        this.settings.setSecretPref("PRIVATE_KEY", certGen.getPrivateKey());
+        this.settings.setPref("PUBLIC_KEY", publicKey);
+        settings.setSecretPref("CONSUMER_KEY", consumerKey);
+        settings.setSecretPref("CONSUMER_SECRET", consumerSecret);
+        this.showDialog("Settings Saved", "Success!");
+        this.setXeroClient();
+        this.jTabbedPane2.setSelectedIndex(1);
+    }//GEN-LAST:event_jButtonApplyActionPerformed
 
     private void jTextConsumerSecretActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextConsumerSecretActionPerformed
         // TODO add your handling code here:
@@ -326,44 +532,43 @@ public class Main extends javax.swing.JFrame {
         this.jTextAreaPublicKey.setText(this.certGen.getPublicKey());
     }//GEN-LAST:event_jButtonChangeKeyActionPerformed
 
-    private void jButtonApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonApplyActionPerformed
-        String consumerKey = this.jTextConsumerKey.getText().trim();
-        String consumerSecret = this.jTextConsumerSecret.getText().trim();
-        String publicKey = this.jTextAreaPublicKey.getText().trim();
-        if(consumerKey.length() != 30){
-            this.showDialog("Consumer Key is not 30 characters.", "Invalid Consumer Key");
-            return;
-        } 
-        if(consumerSecret.length() != 30){
-            this.showDialog("Consumer Secret is not 30 characters.", "Invalid Consumer Secret");
-            return;
-        }
-        if(publicKey.isEmpty()){
-            this.showDialog("Public Key must be specified. Click \"Change Key\" to generate", "Invalid Public Key");
-            return;
-        }
-        
-        if(!certGen.getPrivateKey().isEmpty())
-            this.settings.setSecretPref("PRIVATE_KEY", certGen.getPrivateKey());
-        this.settings.setPref("PUBLIC_KEY", publicKey);
-        settings.setSecretPref("CONSUMER_KEY", consumerKey);
-        settings.setSecretPref("CONSUMER_SECRET", consumerSecret);
-        this.showDialog("Do not forget to add the Pubic Key to the matching API App entry where you got the Consumer Key & Secret!", "Success!");  
-    }//GEN-LAST:event_jButtonApplyActionPerformed
+    private void jButtonXeroAppURL1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXeroAppURL1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonXeroAppURL1ActionPerformed
 
-    private void jButtonXeroAppURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXeroAppURLActionPerformed
-      try {
-            String url = this.jButtonXeroAppURL.getText().replaceAll("\\<[^>]*>","");
+    private void jButtonCyberNinjasURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCyberNinjasURLActionPerformed
+        try {
+            String url = jButtonCyberNinjasURL.getText().replaceAll("\\<[^>]*>","");
             final URI uri = new URI(url);
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(uri);
             }
-      } catch (IOException e) { 
+        } catch (IOException e) {
 
-      } catch (URISyntaxException ex) {
+        } catch (URISyntaxException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-      }
-    }//GEN-LAST:event_jButtonXeroAppURLActionPerformed
+        }
+
+    }//GEN-LAST:event_jButtonCyberNinjasURLActionPerformed
+
+    private void jButtonXeroAppURL2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXeroAppURL2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonXeroAppURL2ActionPerformed
+
+    private void jButtonApply1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonApply1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonApply1ActionPerformed
+
+    private void jPanelSettingsXeroFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPanelSettingsXeroFocusGained
+        //Need to set set options here for obtaining tracking
+        this.showDialog("FOCUS", "Success!");
+        
+    }//GEN-LAST:event_jPanelSettingsXeroFocusGained
+
+    private void jComboBox1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jComboBox1FocusGained
+        // TODO add your handling code here:
+        this.showDialog("FOCUS2", "Success!");
+    }//GEN-LAST:event_jComboBox1FocusGained
 
     /**
      * @param args the command line arguments
@@ -404,25 +609,41 @@ public class Main extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonApply;
+    private javax.swing.JButton jButtonApply1;
     private javax.swing.JButton jButtonChangeKey;
     private javax.swing.JButton jButtonCyberNinjasURL;
-    private javax.swing.JButton jButtonXeroAppURL;
+    private javax.swing.JButton jButtonXeroAppURL1;
+    private javax.swing.JButton jButtonXeroAppURL2;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JComboBox jComboBox4;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelAuthor;
     private javax.swing.JLabel jLabelAuthor1;
+    private javax.swing.JLabel jLabelAuthor2;
+    private javax.swing.JLabel jLabelAuthor3;
     private javax.swing.JLabel jLabelAuthorTitle;
     private javax.swing.JLabel jLabelCompany;
     private javax.swing.JLabel jLabelCompanyTitle;
     private javax.swing.JLabel jLabelConsumerKey;
     private javax.swing.JLabel jLabelConsumerSecret;
     private javax.swing.JLabel jLabelPublicKey;
+    private javax.swing.JLabel jLabelPublicKey1;
+    private javax.swing.JLabel jLabelPublicKey2;
+    private javax.swing.JLabel jLabelPublicKey3;
+    private javax.swing.JLabel jLabelPublicKey4;
     private javax.swing.JLabel jLabelVersion;
     private javax.swing.JLabel jLabelVersionTitle;
     private javax.swing.JLabel jLabelWebsiteTitle;
     private javax.swing.JPanel jPanelAbout;
     private javax.swing.JPanel jPanelInvoicing;
     private javax.swing.JPanel jPanelSettings;
+    private javax.swing.JPanel jPanelSettingsConnection;
+    private javax.swing.JPanel jPanelSettingsXero;
     private javax.swing.JScrollPane jScrollPanePublicKey;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextArea jTextAreaPublicKey;
     private javax.swing.JTextField jTextConsumerKey;
     private javax.swing.JTextField jTextConsumerSecret;
